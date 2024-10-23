@@ -44,7 +44,7 @@ sudo systemctl enable mongod
 sudo systemctl start mongod
 sudo systemctl status mongod
 ```
-![alt text](image-1.png)
+![alt text](images/image-1.png)
 Запускаем оболочку для работы с MongoDB:
 ```Bash
 mongosh
@@ -59,7 +59,7 @@ db.data.insertMany([
  {name: "Anastasya", age: 26, city: "Toronto"}
  ])
 ```
-![alt text](image.png)
+![alt text](images/image.png)
 
 Создаем пользователя `manager` и даем ему права только на чтение:
 ```
@@ -69,14 +69,14 @@ db.createUser({
    roles: [{ role: "read", db: "mydatabase" }]
  })
  ```
- ![alt text](image-2.png)
+ ![alt text](images/image-2.png)
 
  Далее авторизируемся в базе данных `mydatabase` под созданным пользователем:
  ```
  mongosh -u "manager" -p "123123" --authenticationDatabase "mydatabase"
  ```
- ![alt text](image-3.png)
+ ![alt text](images/image-3.png)
  
  И с помощью команды `db.data.find()` проверяем содержимое таблицы:
  
- ![alt text](image-5.png)
+ ![alt text](images/image-5.png)
