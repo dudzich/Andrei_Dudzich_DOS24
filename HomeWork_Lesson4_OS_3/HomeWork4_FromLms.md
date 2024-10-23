@@ -78,4 +78,5 @@ db.createUser({
  ![alt text](image-3.png)
  
  И с помощью команды `db.data.find()` проверяем содержимое таблицы:
+ 
  ![alt text](image-5.png)
