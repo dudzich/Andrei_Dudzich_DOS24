@@ -1,4 +1,4 @@
-## Задание:
+# Задание:
 1. Установить MongoDB. Создать таблицу data. Создать пользователя manager, у которого будет доступ только на чтение этой таблицы.
 2. Ознакомиться с нижеуказанной статьей по теме «Bash» https://habr.com/ru/post/52871/
 3. Написать Bash-скрипт в соответствии с требованиями:
@@ -10,7 +10,7 @@
 Усложнение: предусмотреть возможность не выделения, а удаления подстроки.
 Основные средства: команда cut, переменные оболочки.
 
-# Установка MongoDB
+## Установка MongoDB
 Производим установку GNU Privacy Guard и Client URL для дальнейшего импорта открытого ключа GPG, если они ещё не установлены:
 ```Bash
 sudo apt-get install gnupg curl
@@ -45,3 +45,36 @@ sudo systemctl start mongod
 sudo systemctl status mongod
 ```
 ![alt text](image-1.png)
+Запускаем оболочку для работы с MongoDB:
+```Bash
+mongosh
+```
+
+Заходим в базу `mydatabase`, создаем коллекцию `data` и заполняем её какими-то произвольными значениями:
+```
+use madatabase
+db.data.insertMany([
+ {name: "Andrei", age: 30, city: "Lida"},
+ {name: "Pavel", age: 35, city: "Minsk"},
+ {name: "Anastasya", age: 26, city: "Toronto"}
+ ])
+```
+![alt text](image.png)
+
+Создаем пользователя `manager` и даем ему права только на чтение:
+```
+db.createUser({
+   user: "manager",
+   pwd: "123123",
+   roles: [{ role: "read", db: "mydatabase" }]
+ })
+ ```
+ ![alt text](image-2.png)
+
+ Далее авторизируемся в базе данных `mydatabase` под созданным пользователем:
+ ```
+ mongosh -u "manager" -p "123123" --authenticationDatabase "mydatabase"
+ ```
+ ![alt text](image-3.png)
+ И с помощью команды `db.data.find()` проверяем содержимое таблицы:
+ ![alt text](image-5.png)
