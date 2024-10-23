@@ -39,8 +39,9 @@ sudo systemctl start mongod
 ```Bash
 sudo systemctl enable mongod
 ```
-Проверяем статус:
+Запускаем и проверяем статус:
 ```Bash
+sudo systemctl start mongod
 sudo systemctl status mongod
 ```
-![alt text](image.png)
+![alt text](image-1.png)
