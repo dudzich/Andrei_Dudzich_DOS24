@@ -36,3 +36,49 @@ crontab -e
     * * — каждый месяц и любой день недели.
 
 Эта запись выполнит команду `sudo apt clean` в 16:00 каждого первого числа месяца.
+
+### 2. Запуск демона nodejs-приложения через systemd.
+
+Для создания приложения необходимо установить `Node.js`:
+```Bash
+sudo apt update
+sudo apt install nodejs npm -y
+```
+Создаем директорию для приложения и переходим в неё:
+```Bash
+mkdir ~/myapp
+cd ~/myapp
+```
+Инициализируем npm, устанавливаем зависимости и добавляем библиотеку `express` в директорию приложения:
+```Bash
+npm init -y
+npm install express
+```
+Далее создаём файл `index.js` с простым сервером:
+```Bash
+// ~/myapp/index.js
+const express = require('express');
+const app = express();
+const PORT = process.env.MYAPP_PORT || 3000;
+
+app.get('/', (req, res) => {
+    res.send('200 OK');
+});
+
+app.get('/kill', (req, res) => {
+    res.send('Shutting down');
+    process.exit(1);
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+```
+И проверяем, что приложение запускается, используя команду `node index.js` и перейдя в браузере по адресу `http://localhost:3000/`, чтобы убедиться, что сервер отвечает.
+![alt text](images/systemd1.png)
+![alt text](images/systemd2.png)
+
+Создаем файл сервиса `myapp.service` в `/etc/systemd/system/`:
+```Bash
+sudo nano /etc/systemd/system/myapp.service
+```
