@@ -62,16 +62,16 @@ const app = express();
 const PORT = process.env.MYAPP_PORT || 3000;
 
 app.get('/', (req, res) => {
-    res.send('200 OK');
+    res.send('200 OK\n');
 });
 
 app.get('/kill', (req, res) => {
-    res.send('Shutting down');
+    res.send('Shutting down\n');
     process.exit(1);
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}\n`);
 });
 ```
 И проверяем, что приложение запускается, используя команду `node index.js` и перейдя в браузере по адресу `http://localhost:3000/`, чтобы убедиться, что сервер отвечает.
@@ -82,3 +82,35 @@ app.listen(PORT, () => {
 ```Bash
 sudo nano /etc/systemd/system/myapp.service
 ```
+
+И добавляем в него сдедующий код:
+```Bash
+[Unit]
+Description=My Node.js Application
+After=network.target
+
+[Service]
+Environment=MYAPP_PORT=3000
+ExecStart=/usr/bin/node /home/dudzich/myapp/index.js
+Restart=always
+User=www-data
+Group=www-data
+WorkingDirectory=/home/dudzich/myapp
+
+[Install]
+WantedBy=multi-user.target
+```
+Указывая в нем порт по умолчанию, пути к `node.js`, исполняемому файлу приложения `index.js` и дирректории приложения `/home/dudzich/myapp`.
+
+Далее перезагружаем `systemd`, запускаем наш сервис и проверяем его статус:
+```Bash
+sudo systemctl daemon-reload
+
+sudo systemctl start myapp.service
+sudo systemctl status myapp.service
+```
+![alt text](images/service1.png)
+
+Проверяем работу через `curl`:
+
+![alt text](images/service2.png)
