@@ -112,5 +112,10 @@ sudo systemctl status myapp.service
 ![alt text](images/service1.png)
 
 Проверяем работу через `curl`:
+```Bash
+sudo systemctl daemon-reload
+sudo systemctl restart myapp.service
+sudo systemctl status myapp.service
+```
 
 ![alt text](images/service2.png)
