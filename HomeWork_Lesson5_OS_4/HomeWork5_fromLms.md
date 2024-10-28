@@ -113,9 +113,9 @@ sudo systemctl status myapp.service
 
 Проверяем работу через `curl`:
 ```Bash
-sudo systemctl daemon-reload
-sudo systemctl restart myapp.service
-sudo systemctl status myapp.service
+curl http://localhost:3000/
+curl http://localhost:3000/kill
+curl http://localhost:3000/
 ```
 
 ![alt text](images/service2.png)
