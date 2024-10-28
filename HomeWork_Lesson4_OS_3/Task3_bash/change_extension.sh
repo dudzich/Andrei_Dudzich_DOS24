@@ -39,8 +39,9 @@ else
     new_file="${base_name}.${new_extension}"
 fi
 
-# Переименовываем файл
-mv "$file" "$new_file"
+# Копируем файл с новым именем, оставляя оригинальный файл
+cp "$file" "$new_file"
 
 # Выводим результат
-echo "Файл переименован: $new_file"
+echo "Файл сохранён с новым именем: $new_file"
+
