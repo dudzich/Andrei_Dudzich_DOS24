@@ -99,7 +99,7 @@ chmod +x /home/dudzich/rsync-watch.sh
 #!/bin/bash
 
 LOCAL_FOLDER="/home/dudzich/share"
-GCS_BUCKET="gs://tms_123121419djscj_test"
+GCS_BUCKET="gs://dudzich-dos24"
 
 sync_to_gcs() {
     echo "Синхронизация из локальной папки в корзину GCS..."
@@ -125,6 +125,11 @@ while true; do
     sleep 10
 done
 ```
+Делаем скрипт исполняемым:
+```Bash
+sudo chmod +x sync_gcp.sh
+```
+
 Сначала выполняется полная синхронизация в обе стороны (локальная папка ↔ GCS).
 `inotifywait` отслеживает изменения в локальной папке. При каждом изменении запускается синхронизация:
  * Локальная папка → GCS.
