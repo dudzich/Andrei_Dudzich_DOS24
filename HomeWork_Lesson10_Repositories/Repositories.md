@@ -28,3 +28,12 @@
 
 ![alt text](image-10.png)
 
+6. Переносим коммит в новую ветку с помощью `git reset --hard`:
+
+![alt text](image-11.png)
+
+![alt text](image-12.png)
+
+7. Сделаем изменения и отменим их через `git checkout`:
+
+![alt text](image-13.png)
