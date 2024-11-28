@@ -1,0 +1,3 @@
+Another file
+With no match
+Just text.
