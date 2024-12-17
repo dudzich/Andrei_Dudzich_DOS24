@@ -10,7 +10,7 @@ get_starwars_data() {
 # Функция для вывода всех ресурсов с заданным URL
 get_all_resources() {
     resource_name=$1
-    url="https://swapi.dev/api/$resource_name/"
+    url="https://swapi.py4e.com//api/$resource_name/"
     response=$(get_starwars_data "$url")
     total_results=$(echo "$response" | jq '.count')
 
@@ -35,7 +35,7 @@ get_all_resources() {
 get_resource_by_id() {
     resource_name=$1
     resource_id=$2
-    url="https://swapi.dev/api/$resource_name/$resource_id/"
+    url="https://swapi.py4e.com//api/$resource_name/$resource_id/"
     response=$(get_starwars_data "$url")
 
     if [ -z "$response" ]; then
