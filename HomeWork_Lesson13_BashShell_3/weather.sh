@@ -1,5 +1,25 @@
 #!/bin/bash
 
+# Скрипт для получения информации о погоде в указанном городе.
+# Использует API OpenWeatherMap для получения данных.
+# Позволяет выбирать язык интерфейса (русский/английский) и запрашивать данные о погоде для разных городов.
+# После вывода данных о городе и погоде, предлагает пользователю продолжить или завершить работу.
+
+# Использование: ./weather.sh
+
+# Интерактивный скрипт, не принимает аргументов командной строки.
+# После запуска пользователю предлагается выбрать язык интерфейса,
+# затем вводится название города, для которого необходимо получить информацию о погоде.
+# Вывод включает информацию о городе (название, координаты, страна, население, часовой пояс, время восхода и заката)
+# и информацию о погоде (температура, ощущается как, давление, влажность, скорость ветра и другие параметры).
+
+# Пример работы:
+# 1. Запустить скрипт: ./weather.sh
+# 2. Выбрать язык интерфейса, введя 1 (русский) или 2 (английский).
+# 3. Ввести название города, например "Минск".
+# 4. Скрипт выведет информацию о городе и погоде.
+# 5. Скрипт предложит продолжить или завершить работу.
+
 API_KEY="6f750ece60478d7abaabe2cebdf5e594"
 
 # Преобразованные текстовые ассоциации для английского и русского языков
@@ -21,21 +41,14 @@ TEXTS["ru_weather_info"]="Информация о погоде:"
 TEXTS["en_weather_info"]="Weather Information:"
 TEXTS["ru_not_found"]="Город не найден или произошла ошибка API."
 TEXTS["en_not_found"]="City not found or API error occurred."
+TEXTS["ru_continue"]="Желаете продолжить? (Да/Нет):"
+TEXTS["en_continue"]="Do you want to continue? (Yes/No):"
 
 # Функция для получения перевода текста в зависимости от языка
 get_text() {
     echo "${TEXTS[$1]}"
 }
 
-# Функция форматирования чисел с плавающей точкой
-format_float() {
-    echo "${1:-N/A}"
-}
-
-# Функция форматирования целых чисел
-format_int() {
-    echo "${1:-N/A}"
-}
 
 # Функция для получения и вывода данных о погоде
 fetch_data() {
@@ -77,17 +90,53 @@ fetch_data() {
 
     echo "$(get_text "${lang}_city_info")"
     if [ "$lang" == "ru" ]; then
-        printf "Город: %s\nКоординаты: широта %s, долгота %s\nСтрана: %s\nНаселение: %s\nЧасовой пояс: %s\nВосход солнца: %s\nЗакат солнца: %s\n" "$city" "$lat" "$lon" "$country" "${population:-N/A}" "${timezone:-N/A}" "$sunrise" "$sunset"
+        printf "Город: %s\n" "$city"
+        printf "Координаты: широта %s, долгота %s\n" "$lat" "$lon"
+        printf "Страна: %s\n" "$country"
+        printf "Население: %s\n" "${population:-N/A}"
+        printf "Часовой пояс: %s\n" "${timezone:-N/A}"
+        printf "Восход солнца: %s\n" "$sunrise"
+        printf "Закат солнца: %s\n" "$sunset"
     else
-        printf "City: %s\nCoordinates: Latitude %s, Longitude %s\nCountry: %s\nPopulation: %s\nTimezone: %s\nSunrise: %s\nSunset: %s\n" "$city" "$lat" "$lon" "$country" "${population:-N/A}" "${timezone:-N/A}" "$sunrise" "$sunset"
+        printf "City: %s\n" "$city"
+        printf "Coordinates: Latitude %s, Longitude %s\n" "$lat" "$lon"
+        printf "Country: %s\n" "$country"
+        printf "Population: %s\n" "${population:-N/A}"
+        printf "Timezone: %s\n" "${timezone:-N/A}"
+        printf "Sunrise: %s\n" "$sunrise"
+        printf "Sunset: %s\n" "$sunset"
     fi
     echo ""
 
     echo "$(get_text "${lang}_weather_info")"
     if [ "$lang" == "ru" ]; then
-        printf "Температура: %s°C\nОщущается как: %s°C\nДавление: %d гПа\nУровень моря: %d гПа\nУровень земли: %d гПа\nВлажность: %d%%\nПогода: %s\nОблачность: %d%%\nСкорость ветра: %s м/с\nНаправление ветра: %d°\nПорывы ветра: %s м/с\nВидимость: %d м\nВероятность осадков: %s%%\n" "$(format_float "$temp")" "$(format_float "$feels_like")" "$(format_int "$pressure")" "$(format_int "$sea_level")" "$(format_int "$grnd_level")" "$(format_int "$humidity")" "$weather" "$(format_int "$clouds")" "$(format_float "$wind_speed")" "$(format_int "$wind_deg")" "$(format_float "$wind_gust")" "$(format_int "$visibility")" "$(format_float "$pop")"
+        printf "Температура: %s°C\n" "${temp:-N/A}"
+        printf "Ощущается как: %s°C\n" "${feels_like:-N/A}"
+        printf "Давление: %d гПа\n" "${pressure:-N/A}"
+        printf "Уровень моря: %d гПа\n" "${sea_level:-N/A}"
+        printf "Уровень земли: %d гПа\n" "${grnd_level:-N/A}"
+        printf "Влажность: %d%%\n" "${humidity:-N/A}"
+        printf "Погода: %s\n" "$weather"
+        printf "Облачность: %d%%\n" "${clouds:-N/A}"
+        printf "Скорость ветра: %s м/с\n" "${wind_speed:-N/A}"
+        printf "Направление ветра: %d°\n" "${wind_deg:-N/A}"
+        printf "Порывы ветра: %s м/с\n" "${wind_gust:-N/A}"
+        printf "Видимость: %d м\n" "${visibility:-N/A}"
+        printf "Вероятность осадков: %s%%\n" "${pop:-N/A}"
     else
-        printf "Temperature: %s°C\nFeels like: %s°C\nPressure: %d hPa\nSea level: %d hPa\nGround level: %d hPa\nHumidity: %d%%\nWeather: %s\nCloudiness: %d%%\nWind speed: %s m/s\nWind direction: %d°\nWind gust: %s m/s\nVisibility: %d m\nPrecipitation probability: %s%%\n" "$(format_float "$temp")" "$(format_float "$feels_like")" "$(format_int "$pressure")" "$(format_int "$sea_level")" "$(format_int "$grnd_level")" "$(format_int "$humidity")" "$weather" "$(format_int "$clouds")" "$(format_float "$wind_speed")" "$(format_int "$wind_deg")" "$(format_float "$wind_gust")" "$(format_int "$visibility")" "$(format_float "$pop")"
+        printf "Temperature: %s°C\n" "${temp:-N/A}"
+        printf "Feels like: %s°C\n" "${feels_like:-N/A}"
+        printf "Pressure: %d hPa\n" "${pressure:-N/A}"
+        printf "Sea level: %d hPa\n" "${sea_level:-N/A}"
+        printf "Ground level: %d hPa\n" "${grnd_level:-N/A}"
+        printf "Humidity: %d%%\n" "${humidity:-N/A}"
+        printf "Weather: %s\n" "$weather"
+        printf "Cloudiness: %d%%\n" "${clouds:-N/A}"
+        printf "Wind speed: %s m/s\n" "${wind_speed:-N/A}"
+        printf "Wind direction: %d°\n" "${wind_deg:-N/A}"
+        printf "Wind gust: %s m/s\n" "${wind_gust:-N/A}"
+        printf "Visibility: %d m\n" "${visibility:-N/A}"
+        printf "Precipitation probability: %s%%\n" "${pop:-N/A}"
     fi
     echo ""
 }
@@ -114,8 +163,22 @@ choose_city() {
     fetch_data "$city" "$lang"
 }
 
+# Задаем начальное значение для lang, например, "ru"
+lang="ru"
+
 # Основной цикл
 while true; do
     choose_language
-    choose_city
+    while true; do
+        choose_city
+         read -p "$(get_text "${lang}_continue") " continue_choice
+          continue_choice=$(echo "$continue_choice" | tr '[:upper:]' '[:lower:]')
+         if [[ "$continue_choice" =~ ^(Да|да|Д|д|Yes|yes|Y|y|\+)$ ]]; then
+           break
+         elif [[ "$continue_choice" =~ ^(Нет|нет|Н|н|No|no|N|n|\-)$ ]]; then
+          exit 0
+         else
+          echo "Ошибка: Неверный ввод."
+        fi
+    done
 done
