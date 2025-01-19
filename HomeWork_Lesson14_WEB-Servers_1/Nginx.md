@@ -1,4 +1,4 @@
-## Настройка Nginx с HTML-страницей
+## Задание 1. Настройка Nginx с HTML-страницей
 
 ## Цель
 
@@ -87,7 +87,7 @@ sudo ln -s /etc/nginx/sites-available/tms.by /etc/nginx/sites-enabled/
 sudo nginx -t
 ```
 
-[Место для скриншота вывода команды nginx -t]
+![alt text](images/5.png)
 
 Перезапуск Nginx для применения изменений:
 
@@ -111,3 +111,108 @@ sudo systemctl restart nginx
 
 
 Nginx успешно настроен для отображения HTML-страницы по адресу http://tms.by. Все необходимые шаги выполнены.
+
+### Задание 2: Настройка связки Nginx + Apache (Reverse Proxy)
+
+1.  **Установка Apache:**
+    ```bash
+    sudo apt update
+    sudo apt install apache2
+    ```
+    ![alt text](images/6.png)
+2.  **Создание тестового сайта для Apache:**
+
+    *   Создана директория для тестового сайта:
+        ```bash
+        sudo mkdir -p /var/www/test-apache
+        ```
+    *   Переход в директорию:
+        ```bash
+         cd /var/www/test-apache
+        ```
+    *   Создан файл `index.html`:
+    ```bash
+    sudo nano index.html
+    ```
+    *   Добавлен HTML-код:
+        ```html
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <title>Apache Test Page</title>
+        </head>
+        <body>
+            <h1>This page is served by Apache</h1>
+        </body>
+        </html>
+        ```
+   ![alt text](images/7.png)
+
+3.  **Настройка виртуального хоста Apache:**
+
+    *   Создан файл конфигурации `/etc/apache2/sites-available/test-apache.conf` со следующим содержанием:
+
+        ```apache
+        <VirtualHost *:8080>
+            ServerName test-apache
+            DocumentRoot /var/www/test-apache
+
+            <Directory /var/www/test-apache>
+                AllowOverride All
+                Require all granted
+            </Directory>
+
+        </VirtualHost>
+        ```
+
+    *   Включение сайта и перезапуск apache:
+
+        ```bash
+        sudo a2ensite test-apache.conf
+        sudo systemctl restart apache2
+        ```
+      
+    ![alt text](images/8.png)
+
+4.  **Изменение конфигурации Nginx (для reverse proxy):**
+
+    *   Изменена конфигурация `/etc/nginx/sites-available/tms.by` на следующую:
+
+        ```nginx
+        server {
+            listen 80;
+            server_name tms.by;
+
+            location / {
+                proxy_pass http://127.0.0.1:8080;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+             }
+        }
+        ```
+
+    *   Перезапуск Nginx:
+        ```bash
+         sudo systemctl restart nginx
+        ```
+
+5.  **Проверка (Reverse Proxy):**
+
+    Открыт браузер и осуществлен переход по адресу `http://tms.by`. Отобразилась страница "This page is served by Apache".
+
+     ![alt text](images/9.png)
+     
+   *   Проверка через `curl`
+        ```bash
+         curl http://tms.by
+        ```
+    
+![alt text](images/10.png)
+
+## Результат
+
+*   **Задание 1:** Nginx успешно настроен для отображения HTML-страницы.
+*   **Задание 2:** Связка Nginx + Apache успешно настроена, Nginx выступает в качестве обратного прокси.
